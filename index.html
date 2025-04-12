@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Achando A/O Melhor Amigo</title>
+  <!-- Fonte com clima tecnológico/terminal -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --primary-color: #00ff99;  /* Neon para destaque */
+      --primary-hover: #00cc88;
+      --secondary-color: #ff3366;
+      --secondary-hover: #e62e5c;
+      --background-color: #111;  /* Fundo bem escuro */
+      --container-bg: rgba(20, 20, 20, 0.95);
+      --progress-bg: #222;
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      background: var(--background-color);
+      color: #eee;
+      font-family: "Share Tech Mono", monospace;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    
+    .container {
+      background: var(--container-bg);
+      border-radius: 10px;
+      padding: 2rem;
+      max-width: 500px;
+      width: 100%;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
+      text-align: center;
+    }
+    
+    header h1 {
+      margin-bottom: 1.5rem;
+      font-size: 1.8rem;
+      letter-spacing: 2px;
+    }
+    
+    section {
+      margin-bottom: 1.5rem;
+    }
+    
+    .form-group {
+      margin-bottom: 1rem;
+      text-align: left;
+    }
+    
+    .form-group label {
+      margin-right: 0.5rem;
+    }
+    
+    input[type="number"],
+    textarea {
+      width: 100%;
+      padding: 0.5rem;
+      border-radius: 5px;
+      border: 1px solid #444;
+      background: #222;
+      color: #eee;
+      font-family: inherit;
+      margin-top: 0.3rem;
+    }
+    
+    textarea {
+      resize: vertical;
+      height: 100px;
+    }
+    
+    button {
+      padding: 0.8rem 2rem;
+      font-size: 1rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      background: var(--primary-color);
+      color: #111;
+      transition: transform 0.3s, background 0.3s;
+      letter-spacing: 1px;
+      margin: 0.3rem;
+    }
+    
+    button:hover {
+      background: var(--primary-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.7);
+    }
+    
+    button:disabled {
+      background: #555;
+      cursor: not-allowed;
+    }
+    
+    /* Botão de Compartilhar */
+    .share-btn {
+      background: var(--primary-color);
+    }
+    .share-btn:hover {
+      background: var(--primary-hover);
+    }
+    
+    /* Área de progresso com efeito cíclico */
+    .progress-cycle {
+      width: 150px;
+      height: 150px;
+      margin: 25px auto;
+      position: relative;
+      border-radius: 50%;
+      background: conic-gradient(var(--primary-color) 0%, var(--progress-bg) 0%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: pulse 2s infinite;
+      transition: transform 0.3s;
+    }
+    
+    .progress-cycle::after {
+      content: "";
+      position: absolute;
+      width: 120px;
+      height: 120px;
+      background: var(--container-bg);
+      border-radius: 50%;
+    }
+    
+    #percentage {
+      font-size: 2rem;
+      font-weight: bold;
+      z-index: 1;
+      color: var(--primary-color);
+    }
+    
+    #statusMessage {
+      margin: 10px 0;
+      font-style: italic;
+      color: var(--primary-color);
+      display: none;
+    }
+    
+    .message {
+      background: #222;
+      padding: 1rem;
+      border-radius: 5px;
+      animation: slideIn 1s ease forwards;
+    }
+    
+    .message p {
+      margin: 0.5rem 0;
+    }
+    
+    .restart-btn {
+      background: var(--secondary-color);
+      margin-top: 1rem;
+      display: none;
+    }
+    
+    .restart-btn:hover {
+      background: var(--secondary-hover);
+    }
+    
+    footer {
+      text-align: center;
+      color: #777;
+      font-size: 0.8rem;
+      border-top: 1px solid #333;
+      margin-top: 1.5rem;
+      padding-top: 0.5rem;
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(0.98); }
+      50% { transform: scale(1.02); }
+      100% { transform: scale(0.98); }
+    }
+    
+    @keyframes slideIn {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Achando A/O Melhor Amigo</h1>
+    </header>
+    
+    <!-- Seção Inicial: Coleta de dados -->
+    <section id="introSection">
+      <p>Para iniciar, informe seus dados:</p>
+      <div class="form-group">
+        <label for="ageInput">Idade:</label>
+        <input type="number" id="ageInput" min="1" placeholder="Sua idade" />
+      </div>
+      <div class="form-group">
+        <span>Sexo:</span>
+        <label><input type="radio" name="gender" value="male" /> Masculino</label>
+        <label><input type="radio" name="gender" value="female" /> Feminino</label>
+      </div>
+      <div class="form-group">
+        <span>Área:</span>
+        <label><input type="radio" name="area" value="social" /> Vida Social</label>
+        <label><input type="radio" name="area" value="academica" /> Vida Acadêmica</label>
+        <label><input type="radio" name="area" value="profissional" /> Vida Profissional</label>
+      </div>
+      <button id="startOperationBtn">Iniciar Missão</button>
+    </section>
+    
+    <!-- Seção de Análise: Inserir nomes -->
+    <section id="operationSection" style="display: none;">
+      <p>Digite os nomes das pessoas (separados por vírgula ou em linhas):</p>
+      <textarea id="namesInput" placeholder="Ex: Ana, Bruno, Carla, Daniel"></textarea>
+      <br />
+      <button id="executeAnalysisBtn">Executar Análise</button>
+      <div class="progress-cycle" id="progressCycle" style="display: none;" aria-live="polite">
+        <div id="percentage">0%</div>
+      </div>
+      <p id="statusMessage">Iniciando análise...</p>
+    </section>
+    
+    <!-- Seção de Resultado -->
+    <section id="resultSection" style="display: none;">
+      <div class="message" id="resultMessage">
+        <p id="resultText"></p>
+        <button class="restart-btn" id="restartBtn">Nova Missão</button>
+        <button class="share-btn" id="shareBtn">Compartilhar</button>
+      </div>
+    </section>
+    
+    <footer>
+      Desenvolvido por Fernando Flcy
+    </footer>
+  </div>
+  
+  <!-- Áudio para som de fundo e processameto -->
+  <audio id="backgroundAudio" src="background.mp3" loop></audio>
+  <audio id="processingAudio" src="processing.mp3" loop></audio>
+  
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // Seções
+      const introSection = document.getElementById("introSection");
+      const operationSection = document.getElementById("operationSection");
+      const resultSection = document.getElementById("resultSection");
+      // Controles da tela inicial
+      const startOperationBtn = document.getElementById("startOperationBtn");
+      const ageInput = document.getElementById("ageInput");
+      const genderInputs = document.getElementsByName("gender");
+      const areaInputs = document.getElementsByName("area");
+      // Controles da análise
+      const namesInput = document.getElementById("namesInput");
+      const executeAnalysisBtn = document.getElementById("executeAnalysisBtn");
+      const progressCycle = document.getElementById("progressCycle");
+      const percentageDisplay = document.getElementById("percentage");
+      const statusMessage = document.getElementById("statusMessage");
+      // Controles de resultado
+      const resultText = document.getElementById("resultText");
+      const restartBtn = document.getElementById("restartBtn");
+      const shareBtn = document.getElementById("shareBtn");
+      // Áudios de fundo e processamento
+      const backgroundAudio = document.getElementById("backgroundAudio");
+      const processingAudio = document.getElementById("processingAudio");
+      
+      let userGender = null;
+      let userAge = null;
+      let userArea = null;
+      let searchInterval, statusInterval, connectionEffect;
+      
+      // Ao iniciar a missão, coleta os dados do usuário e inicia o som de fundo
+      startOperationBtn.addEventListener("click", () => {
+        userAge = ageInput.value.trim();
+        if (!userAge || userAge <= 0) {
+          alert("Por favor, insira uma idade válida.");
+          return;
+        }
+        // Captura o sexo selecionado
+        for (const radio of genderInputs) {
+          if (radio.checked) {
+            userGender = radio.value;
+            break;
+          }
+        }
+        if (!userGender) {
+          alert("Por favor, selecione seu sexo.");
+          return;
+        }
+        // Captura a área selecionada
+        for (const radio of areaInputs) {
+          if (radio.checked) {
+            userArea = radio.value;
+            break;
+          }
+        }
+        if (!userArea) {
+          alert("Por favor, selecione uma área.");
+          return;
+        }
+        introSection.style.display = "none";
+        operationSection.style.display = "block";
+        // Inicia o som de fundo
+        backgroundAudio.currentTime = 0;
+        backgroundAudio.play().catch(error => console.log("Erro ao reproduzir som de fundo:", error));
+      });
+      
+      // Função para calcular a pontuação de cada nome
+      function calculateScore(name) {
+        let score = 0;
+        score += name.length * 2; // Peso do comprimento
+        const vowels = name.match(/[aeiou]/gi);
+        if (vowels) {
+          score += vowels.length * 3; // Peso para cada vogal
+        }
+        score += Math.random() * 5; // Fator aleatório
+        return score;
+      }
+      
+      // Escolhe o candidato com base na pontuação
+      function chooseBestFriend(names) {
+        let bestScore = -Infinity;
+        let bestCandidate = "";
+        names.forEach(name => {
+          const score = calculateScore(name);
+          if (score > bestScore) {
+            bestScore = score;
+            bestCandidate = name;
+          }
+        });
+        return bestCandidate;
+      }
+      
+      // Expressões durante a análise (mesmas da primeira versão)
+      const progressMessages = [
+        "As melhores coisas acontecem quando menos esperamos!",
+        "O amor está a caminho - continue sendo você mesmo!",
+        "Grandes histórias começam com um simples 'olá'!",
+        "Sua energia atrai o que merece - mantenha-se positivo!",
+        "O universo está trabalhando a seu favor! ✨"
+      ];
+      
+      // Inicia a análise dos nomes
+      executeAnalysisBtn.addEventListener("click", () => {
+        const rawInput = namesInput.value.trim();
+        if (!rawInput) {
+          alert("Por favor, insira pelo menos um nome.");
+          return;
+        }
+        const names = rawInput.split(/[\n,]+/).map(n => n.trim()).filter(n => n !== "");
+        if (names.length === 0) {
+          alert("Por favor, insira nomes válidos.");
+          return;
+        }
+        executeAnalysisBtn.disabled = true;
+        namesInput.disabled = true;
+        
+        // Inicia o som de processamento
+        processingAudio.currentTime = 0;
+        processingAudio.play().catch(error => console.log("Erro ao reproduzir som de processamento:", error));
+        
+        progressCycle.style.display = "flex";
+        statusMessage.style.display = "block";
+        
+        let progress = 0;
+        searchInterval = setInterval(() => {
+          progress += Math.random() * 3;
+          progressCycle.style.background = `conic-gradient(var(--primary-color) ${progress}%, #222 ${progress}% 100%)`;
+          percentageDisplay.textContent = `${Math.min(Math.floor(progress), 100)}%`;
+          
+          if (progress >= 100) {
+            clearInterval(searchInterval);
+            progressCycle.style.animation = "none";
+            setTimeout(() => {
+              concludeAnalysis(names);
+              clearInterval(statusInterval);
+              clearInterval(connectionEffect);
+            }, 1000);
+          }
+        }, 150);
+        
+        // Atualiza a mensagem de status periodicamente
+        statusInterval = setInterval(() => {
+          const randomMsg = progressMessages[Math.floor(Math.random() * progressMessages.length)];
+          statusMessage.textContent = randomMsg;
+        }, 1500);
+        
+        // Efeito de oscilação na barra de progresso
+        connectionEffect = setInterval(() => {
+          if (progress < 100) {
+            progressCycle.style.transform = `scale(${1 + (Math.random() * 0.1)})`;
+          }
+        }, 500);
+      });
+      
+      // Conclui a análise e exibe o resultado, personalizando conforme a área
+      function concludeAnalysis(names) {
+        const selectedName = chooseBestFriend(names);
+        let friendText = "";
+        let finalComment = "";
+        
+        switch (userArea) {
+          case "social":
+            friendText = userGender === "male" ? "melhor amigo" : "melhor amiga";
+            finalComment = userGender === "male" 
+              ? "Este companheiro está pronto para qualquer aventura social." 
+              : "Esta companheira tem a sintonia perfeita para transformar sua vida social.";
+            break;
+          case "academica":
+            friendText = "melhor colega";
+            finalComment = "Este colega é o parceiro ideal para encarar os desafios acadêmicos.";
+            break;
+          case "profissional":
+            friendText = userGender === "male" ? "melhor companheiro" : "melhor companheira";
+            finalComment = userGender === "male" 
+              ? "Este profissional é a escolha certa para impulsionar sua carreira." 
+              : "Esta profissional é a parceira ideal para alavancar sua trajetória.";
+            break;
+          default:
+            friendText = "melhor amigo(a)";
+            finalComment = "A escolha feita reflete uma conexão única.";
+        }
+        
+        resultText.innerHTML = `<strong>${selectedName}</strong> foi designad${userGender === "male" ? "o" : "a"} como seu ${friendText}!<br><small>${finalComment}</small>`;
+        operationSection.style.display = "none";
+        resultSection.style.display = "block";
+        // Para os áudios de processamento e fundo
+        processingAudio.pause();
+        processingAudio.currentTime = 0;
+        backgroundAudio.pause();
+        backgroundAudio.currentTime = 0;
+      }
+      
+      // Função para copiar o link para a área de transferência
+      function copyToClipboard(text) {
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        textarea.style.position = 'fixed';
+        textarea.style.top = '-9999px';
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+      }
+      
+      // Compartilhamento nas redes sociais
+      shareBtn.addEventListener("click", () => {
+        const shareData = {
+          title: "Achando A/O Melhor Amigo",
+          text: "Confira o resultado da sua missão!",
+          url: window.location.href
+        };
+        
+        if (navigator.share) {
+          navigator.share(shareData)
+            .then(() => console.log("Compartilhado com sucesso!"))
+            .catch((error) => console.log("Erro ao compartilhar", error));
+        } else {
+          copyToClipboard(shareData.url);
+          alert("Link copiado para a área de transferência. Compartilhe-o em suas redes sociais!");
+        }
+      });
+      
+      // Reinicia a missão sem recarregar a página
+      restartBtn.addEventListener("click", () => {
+        clearInterval(searchInterval);
+        clearInterval(statusInterval);
+        clearInterval(connectionEffect);
+        namesInput.value = "";
+        namesInput.disabled = false;
+        executeAnalysisBtn.disabled = false;
+        progressCycle.style.display = "none";
+        percentageDisplay.textContent = "0%";
+        statusMessage.style.display = "none";
+        resultSection.style.display = "none";
+        introSection.style.display = "block";
+      });
+    });
+  </script>
+</body>
+</html>
